@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Schedule - GPL Mini Tournament{% endblock %}
+
+{% block content %}
+<div class="text-center mb-6 sm:mb-8">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">📅 Match Schedule</h1>
+    <p class="text-base sm:text-lg text-gray-600 px-2">Complete tournament schedule for GPL Mini Tournament</p>
+</div>
+
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="p-4 sm:p-6">
+        {% if matches %}
+            <div class="space-y-4 sm:space-y-6">
+                {% for match in matches %}
+                <div class="border border-gray-200 rounded-lg p-3 sm:p-4 lg:p-6 hover:shadow-md transition-shadow">
+                    <!-- Mobile Layout -->
+                    <div class="block lg:hidden">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-2">
+                                {% if match.team1.logo %}
+                                    <img src="{{ match.team1.logo.url }}" alt="{{ match.team1.name }}" class="w-10 h-10 rounded-full object-cover">
+                                {% else %}
+                                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm font-bold">
+                                        {{ match.team1.name|slice:":2"|upper }}
+                                    </div>
+                                {% endif %}
+                                <div class="text-center">
+                                    <h3 class="font-semibold text-gray-900 text-sm">{{ match.team1.name }}</h3>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center flex-shrink-0">
+                                <div class="text-lg font-bold text-gray-400 mb-1">VS</div>
+                                <div class="text-xs text-gray-500">{{ match.date }}</div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-2">
+                                <div class="text-center">
+                                    <h3 class="font-semibold text-gray-900 text-sm">{{ match.team2.name }}</h3>
+                                </div>
+                                {% if match.team2.logo %}
+                                    <img src="{{ match.team2.logo.url }}" alt="{{ match.team2.name }}" class="w-10 h-10 rounded-full object-cover">
+                                {% else %}
+                                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm font-bold">
+                                        {{ match.team2.name|slice:":2"|upper }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Status Badge -->
+                        <div class="flex justify-center">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium
+                                {% if match.status == 'scheduled' %}bg-blue-100 text-blue-800
+                                {% elif match.status == 'live' %}bg-green-100 text-green-800
+                                {% elif match.status == 'completed' %}bg-gray-100 text-gray-800
+                                {% endif %}">
+                                {{ match.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Layout -->
+                    <div class="hidden lg:flex items-center justify-between">
+                        <div class="flex items-center space-x-6">
+                            <!-- Team 1 -->
+                            <div class="text-center">
+                                {% if match.team1.logo %}
+                                    <img src="{{ match.team1.logo.url }}" alt="{{ match.team1.name }}" class="w-16 h-16 rounded-full object-cover mx-auto mb-2">
+                                {% else %}
+                                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-lg font-bold mx-auto mb-2">
+                                        {{ match.team1.name|slice:":2"|upper }}
+                                    </div>
+                                {% endif %}
+                                <h3 class="font-semibold text-gray-900 text-sm sm:text-base">{{ match.team1.name }}</h3>
+                            </div>
+
+                            <!-- VS -->
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-gray-400 mb-2">VS</div>
+                                <div class="text-sm text-gray-500">{{ match.date }}</div>
+                            </div>
+
+                            <!-- Team 2 -->
+                            <div class="text-center">
+                                {% if match.team2.logo %}
+                                    <img src="{{ match.team2.logo.url }}" alt="{{ match.team2.name }}" class="w-16 h-16 rounded-full object-cover mx-auto mb-2">
+                                {% else %}
+                                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-lg font-bold mx-auto mb-2">
+                                        {{ match.team2.name|slice:":2"|upper }}
+                                    </div>
+                                {% endif %}
+                                <h3 class="font-semibold text-gray-900 text-sm sm:text-base">{{ match.team2.name }}</h3>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="text-right">
+                            <span class="px-3 py-1 rounded-full text-sm font-medium
+                                {% if match.status == 'scheduled' %}bg-blue-100 text-blue-800
+                                {% elif match.status == 'live' %}bg-green-100 text-green-800
+                                {% elif match.status == 'completed' %}bg-gray-100 text-gray-800
+                                {% endif %}">
+                                {{ match.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-8 sm:py-12">
+                <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">📅</div>
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No Matches Scheduled</h3>
+                <p class="text-sm sm:text-base text-gray-500">Matches will be scheduled soon.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Tournament Info Cards -->
+<div class="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 text-center">
+        <div class="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">{{ matches.count }}</div>
+        <div class="text-sm sm:text-base text-gray-600">Total Matches</div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 text-center">
+        <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">
+            {{ matches|length|add:"-1"|default:"0" }}
+        </div>
+        <div class="text-sm sm:text-base text-gray-600">Remaining</div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 text-center">
+        <div class="text-2xl sm:text-3xl font-bold text-amber-600 mb-2">4</div>
+        <div class="text-sm sm:text-base text-gray-600">Teams</div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 text-center">
+        <div class="text-2xl sm:text-3xl font-bold text-purple-600 mb-2">6</div>
+        <div class="text-sm sm:text-base text-gray-600">Round Robin</div>
+    </div>
+</div>
+{% endblock %} 

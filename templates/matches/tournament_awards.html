@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Tournament Awards - Gali Premier League{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">🏆 Tournament Awards</h1>
+        <p class="text-gray-600">Celebrating outstanding performances and achievements</p>
+    </div>
+
+    <!-- Major Awards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Player of the Tournament -->
+        {% if awards.player_of_tournament %}
+        <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg shadow-lg p-6 text-white">
+            <div class="text-center">
+                <div class="text-4xl mb-4">👑</div>
+                <h3 class="text-xl font-bold mb-2">Player of the Tournament</h3>
+                <div class="text-2xl font-bold mb-2">{{ awards.player_of_tournament.player.name }}</div>
+                <div class="text-sm opacity-90">{{ awards.player_of_tournament.player.team.name }}</div>
+                <div class="text-sm opacity-90 mt-2">Score: {{ awards.player_of_tournament.value }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Highest Run Scorer -->
+        {% if awards.highest_run_scorer %}
+        <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-lg shadow-lg p-6 text-white">
+            <div class="text-center">
+                <div class="text-4xl mb-4">🏏</div>
+                <h3 class="text-xl font-bold mb-2">Highest Run Scorer</h3>
+                <div class="text-2xl font-bold mb-2">{{ awards.highest_run_scorer.player.name }}</div>
+                <div class="text-sm opacity-90">{{ awards.highest_run_scorer.player.team.name }}</div>
+                <div class="text-sm opacity-90 mt-2">{{ awards.highest_run_scorer.value }} runs</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Highest Wicket Taker -->
+        {% if awards.highest_wicket_taker %}
+        <div class="bg-gradient-to-br from-red-400 to-red-600 rounded-lg shadow-lg p-6 text-white">
+            <div class="text-center">
+                <div class="text-4xl mb-4">🎯</div>
+                <h3 class="text-xl font-bold mb-2">Highest Wicket Taker</h3>
+                <div class="text-2xl font-bold mb-2">{{ awards.highest_wicket_taker.player.name }}</div>
+                <div class="text-sm opacity-90">{{ awards.highest_wicket_taker.player.team.name }}</div>
+                <div class="text-sm opacity-90 mt-2">{{ awards.highest_wicket_taker.value }} wickets</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- All Awards Table -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="text-purple-600 mr-2">🏅</span>
+            Complete Awards List
+        </h2>
+        
+        {% if all_awards %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Award</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Player</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for award in all_awards %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            {% if award.award_type == 'player_of_tournament' %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    👑 {{ award.get_award_type_display }}
+                                </span>
+                            {% elif award.award_type == 'highest_run_scorer' %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    🏏 {{ award.get_award_type_display }}
+                                </span>
+                            {% elif award.award_type == 'highest_wicket_taker' %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    🎯 {{ award.get_award_type_display }}
+                                </span>
+                            {% else %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    🏅 {{ award.get_award_type_display }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ award.player.name }}</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="text-sm text-gray-500">{{ award.player.team.name }}</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="text-sm font-bold text-gray-900">{{ award.value }}</div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="text-sm text-gray-500">{{ award.description }}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <div class="text-6xl mb-4">🏆</div>
+            <p class="text-gray-500 text-lg">No awards have been given yet.</p>
+            <p class="text-gray-400 text-sm mt-2">Awards will be automatically calculated based on player performances.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tournament Info -->
+    <div class="bg-blue-50 rounded-lg p-6 mt-8">
+        <h3 class="text-xl font-bold text-blue-800 mb-4">🏏 Tournament Format</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-700">
+            <div>
+                <p><strong>Match Format:</strong> 5 overs per innings</p>
+                <p><strong>Points System:</strong> 2 points for a win</p>
+                <p><strong>Tiebreaker:</strong> Net Run Rate (NRR)</p>
+            </div>
+            <div>
+                <p><strong>Award Scoring:</strong></p>
+                <p>• Player of the Tournament: Best overall performance</p>
+                <p>• Highest Run Scorer: Most runs in tournament</p>
+                <p>• Highest Wicket Taker: Most wickets in tournament</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

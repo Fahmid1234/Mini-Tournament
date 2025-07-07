@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Points Table - GPL Mini Tournament{% endblock %}
+
+{% block content %}
+<div class="text-center mb-6 sm:mb-8">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">📊 Points Table</h1>
+    <p class="text-base sm:text-lg text-gray-600 px-2">Live standings and statistics for GPL Mini Tournament</p>
+</div>
+
+<!-- Final Qualification Info -->
+<div class="mb-6 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl p-4 sm:p-6">
+    <div class="flex items-center justify-center mb-3">
+        <span class="text-amber-600 text-2xl mr-3">🏆</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-amber-800">Final Qualification</h2>
+    </div>
+    <p class="text-center text-amber-700 text-sm sm:text-base">Top 2 teams qualify for the final and win prizes!</p>
+</div>
+
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="p-4 sm:p-6">
+        {% if points_table %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="gpl-gradient">
+                        <tr>
+                            <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Pos</th>
+                            <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Team</th>
+                            <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-white uppercase tracking-wider">P</th>
+                            <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-white uppercase tracking-wider">W</th>
+                            <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-white uppercase tracking-wider">L</th>
+                            <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Pts</th>
+                            <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-white uppercase tracking-wider">NRR</th>
+                            <th class="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for entry in points_table %}
+                        <tr class="{% if forloop.counter <= 2 %}bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400{% elif forloop.counter == 3 %}bg-red-100{% elif forloop.counter == 4 %}bg-red-100{% else %}hover:bg-gray-50{% endif %}">
+
+                            <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">
+                                {% if forloop.counter <= 2 %}
+                                    <span class="inline-flex items-center justify-center w-6 h-6 bg-amber-500 text-white rounded-full text-xs font-bold">
+                                        {{ forloop.counter }}
+                                    </span>
+                                {% else %}
+                                    {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    {% if entry.team.logo %}
+                                        <img src="{{ entry.team.logo.url }}" alt="{{ entry.team.name }}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover mr-2 sm:mr-3">
+                                    {% else %}
+                                        <div class="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs font-semibold mr-2 sm:mr-3">
+                                            {{ entry.team.name|slice:":2"|upper }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-20 sm:max-w-none">
+                                        {{ entry.team.name }}
+                                        {% if forloop.counter <= 2 %}
+                                            <span class="ml-1 text-amber-600">🏆</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{{ entry.matches_played }}</td>
+                            <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{{ entry.wins }}</td>
+                            <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{{ entry.losses }}</td>
+                            <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-bold text-gray-900">{{ entry.points }}</td>
+                            <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
+                                <span class="{% if entry.nrr > 0 %}text-green-600{% elif entry.nrr < 0 %}text-red-600{% endif %}">
+                                    {% if entry.nrr > 0 %}+{% endif %}{{ entry.nrr|floatformat:3 }}
+                                </span>
+                            </td>
+                            <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                {% if forloop.counter == 1 %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        🥇 1st Place
+                                    </span>
+                                {% elif forloop.counter == 2 %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        🥈 2nd Place
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        Eliminated
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Prize Information -->
+            <div class="mt-6 sm:mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-lg p-4 sm:p-6">
+                    <div class="flex items-center mb-3">
+                        <span class="text-3xl mr-3">🥇</span>
+                        <div>
+                            <h4 class="font-bold text-yellow-800 text-lg">1st Place Prize</h4>
+                            <p class="text-yellow-700 text-sm">Championship Trophy + Cash Prize</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-r from-gray-50 to-slate-50 border border-gray-200 rounded-lg p-4 sm:p-6">
+                    <div class="flex items-center mb-3">
+                        <span class="text-3xl mr-3">🥈</span>
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg">2nd Place Prize</h4>
+                            <p class="text-gray-700 text-sm">Runner-up Trophy + Cash Prize</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tournament Statistics -->
+            <div class="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                <div class="bg-blue-50 rounded-lg p-3 sm:p-4 text-center">
+                    <div class="text-lg sm:text-2xl font-bold text-blue-600">{{ total_matches }}</div>
+                    <div class="text-xs sm:text-sm text-gray-600">Total Matches</div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-3 sm:p-4 text-center">
+                    <div class="text-lg sm:text-2xl font-bold text-green-600">{{ completed_matches }}</div>
+                    <div class="text-xs sm:text-sm text-gray-600">Completed</div>
+                </div>
+                <div class="bg-yellow-50 rounded-lg p-3 sm:p-4 text-center">
+                    <div class="text-lg sm:text-2xl font-bold text-yellow-600">{{ upcoming_matches }}</div>
+                    <div class="text-xs sm:text-sm text-gray-600">Upcoming</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-3 sm:p-4 text-center">
+                    <div class="text-lg sm:text-2xl font-bold text-purple-600">{{ total_teams }}</div>
+                    <div class="text-xs sm:text-sm text-gray-600">Teams</div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-8 sm:py-12">
+                <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">📊</div>
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Points Table Not Available</h3>
+                <p class="text-sm sm:text-base text-gray-500">Points table will be available once matches are completed.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- NRR Explanation -->
+<div class="mt-6 sm:mt-8 bg-white rounded-xl shadow-lg p-4 sm:p-6">
+    <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">📈 About Net Run Rate (NRR)</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-2">How NRR is Calculated</h3>
+            <p class="text-xs sm:text-sm text-gray-600">
+                Net Run Rate is calculated as: (Runs Scored / Overs Faced) - (Runs Conceded / Overs Bowled)
+            </p>
+        </div>
+        <div>
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-2">Tie-Breaking</h3>
+            <p class="text-xs sm:text-sm text-gray-600">
+                When teams have equal points, NRR is used to determine the higher position in the standings.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

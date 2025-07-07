@@ -1,0 +1,314 @@
+/* Custom Admin Icons for GPL Mini Tournament */
+
+/* Player Match Performance Icon */
+.model-playermatchperformance .addlink::before {
+    content: "🏏";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.model-playermatchperformance .changelink::before {
+    content: "📊";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+/* Tournament Awards Icon */
+.model-tournamentawards .addlink::before {
+    content: "🏆";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.model-tournamentawards .changelink::before {
+    content: "🏅";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+/* Match Icon Enhancement */
+.model-match .addlink::before {
+    content: "⚽";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.model-match .changelink::before {
+    content: "📅";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+/* Points Table Icon */
+.model-pointstableentry .addlink::before {
+    content: "📈";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.model-pointstableentry .changelink::before {
+    content: "📊";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+/* Team Icon Enhancement */
+.model-team .addlink::before {
+    content: "👥";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.model-team .changelink::before {
+    content: "🏢";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+/* Player Icon Enhancement */
+.model-player .addlink::before {
+    content: "👤";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.model-player .changelink::before {
+    content: "🏃";
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+/* Admin Site Header Enhancement */
+#header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 100%);
+    color: white;
+}
+
+#header h1 {
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+/* Breadcrumb Enhancement */
+.breadcrumbs {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.breadcrumbs a {
+    color: white;
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    color: #1e1b4b;
+    text-decoration: underline;
+}
+
+/* Module List Enhancement */
+.module h2, .module caption, .inline-group h2 {
+    background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 100%);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+/* Button Enhancement */
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin: 2px;
+}
+
+.button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    color: white;
+    text-decoration: none;
+}
+
+/* Delete Button */
+.deletelink {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+}
+
+.deletelink:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%) !important;
+}
+
+/* Add Button */
+.addlink {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+}
+
+.addlink:hover {
+    background: linear-gradient(135deg, #047857 0%, #059669 100%) !important;
+}
+
+/* Change Button */
+.changelink {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+}
+
+.changelink:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+}
+
+/* Table Enhancement */
+#result_list {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#result_list thead th {
+    background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 100%);
+    color: white;
+    border: none;
+    padding: 12px 8px;
+}
+
+#result_list tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+#result_list tbody tr:hover {
+    background-color: #e2e8f0;
+}
+
+/* Form Enhancement */
+.form-row {
+    padding: 10px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.form-row label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-row input, .form-row select, .form-row textarea {
+    border: 2px solid #d1d5db;
+    border-radius: 5px;
+    padding: 8px 12px;
+    transition: border-color 0.3s ease;
+}
+
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Object Tools Enhancement */
+.object-tools {
+    margin: 0;
+    padding: 0;
+}
+
+.object-tools li {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.object-tools a {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.object-tools a:hover {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .object-tools {
+        text-align: center;
+        margin-top: 10px;
+    }
+    
+    .object-tools li {
+        display: block;
+        margin: 5px 0;
+    }
+    
+    #result_list {
+        font-size: 14px;
+    }
+    
+    #result_list th,
+    #result_list td {
+        padding: 8px 4px;
+    }
+}
+
+/* Custom Icons for Specific Actions */
+.addlink::before {
+    content: "➕";
+    margin-right: 5px;
+}
+
+.changelink::before {
+    content: "✏️";
+    margin-right: 5px;
+}
+
+.deletelink::before {
+    content: "🗑️";
+    margin-right: 5px;
+}
+
+.viewlink::before {
+    content: "👁️";
+    margin-right: 5px;
+}
+
+/* Success/Error Messages */
+.messagelist {
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.messagelist li {
+    padding: 15px 20px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.messagelist li.success {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: white;
+}
+
+.messagelist li.error {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    color: white;
+}
+
+.messagelist li.warning {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    color: white;
+}
+
+.messagelist li.info {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    color: white;
+} 

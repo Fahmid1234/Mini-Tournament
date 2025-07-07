@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Teams - GPL Mini Tournament{% endblock %}
+
+{% block content %}
+<div class="text-center mb-6 sm:mb-8">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">🏏 Our Teams</h1>
+    <p class="text-base sm:text-lg text-gray-600 px-2">Meet the teams competing in our GPL Mini Tournament</p>
+</div>
+
+{% if teams %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {% for team in teams %}
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+            <div class="p-4 sm:p-6">
+                <div class="text-center mb-3 sm:mb-4">
+                    {% if team.logo %}
+                        <img src="{{ team.logo.url }}" alt="{{ team.name }}" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full object-cover border-4 border-gray-200">
+                    {% else %}
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-gray-200 flex items-center justify-center text-lg sm:text-2xl font-bold text-gray-600">
+                            {{ team.name|slice:":2"|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900 text-center mb-2">{{ team.name }}</h3>
+                <p class="text-sm sm:text-base text-gray-600 text-center mb-3 sm:mb-4">{{ team.players.count }} Players</p>
+                <div class="text-center">
+                    <a href="{% url 'team_detail' team.id %}" class="inline-block bg-amber-500 hover:bg-amber-600 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition-colors text-sm sm:text-base w-full sm:w-auto">
+                        View Team
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-12">
+        <div class="text-6xl mb-4">🏏</div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No Teams Yet</h3>
+        <p class="text-gray-500">Teams will be added soon. Check back later!</p>
+    </div>
+{% endif %}
+{% endblock %} 
