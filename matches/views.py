@@ -3,45 +3,35 @@ from django.contrib import messages
 from django.db.models import Sum, Avg, Count, Q
 from .models import Match, PointsTableEntry, PlayerMatchPerformance, TournamentAwards
 from teams.models import Team, Player
+from django.utils import timezone
 
 def schedule(request):
     matches = Match.objects.all().order_by('date')
     return render(request, 'matches/schedule.html', {'matches': matches})
 
 def results(request):
-    if request.method == 'POST':
-        match_id = request.POST.get('match_id')
-        team1_score = request.POST.get('team1_score')
-        team2_score = request.POST.get('team2_score')
-        
-        try:
-            match = Match.objects.get(id=match_id)
-            match.team1_score = int(team1_score)
-            match.team2_score = int(team2_score)
-            match.status = 'completed'
-            
-            if match.team1_score > match.team2_score:
-                match.result = f"{match.team1.name} won by {match.team1_score - match.team2_score} runs"
-            else:
-                match.result = f"{match.team2.name} won by {match.team2_score - match.team1_score} runs"
-            
-            match.save()
-            
-            # Update points table
-            update_points_table(match)
-            
-            messages.success(request, 'Match result updated successfully!')
-        except Exception as e:
-            messages.error(request, f'Error updating match result: {str(e)}')
-        
-        return redirect('results')
-    
-    completed_matches = Match.objects.filter(status='completed').order_by('-date')
-    upcoming_matches = Match.objects.filter(status='upcoming').order_by('date')
-    
+    from teams.models import Team
+    teams = Team.objects.all()
+    matches = Match.objects.all().order_by('-date')
+
+    # Filters
+    team_id = request.GET.get('team')
+    date = request.GET.get('date')
+    status = request.GET.get('status')
+
+    if team_id and team_id.isdigit():
+        matches = matches.filter(Q(team1_id=team_id) | Q(team2_id=team_id))
+    if date:
+        matches = matches.filter(date=date)
+    if status and status in dict(Match.STATUS_CHOICES):
+        matches = matches.filter(status=status)
+
     context = {
-        'matches': completed_matches,
-        'upcoming_matches': upcoming_matches,
+        'matches': matches,
+        'teams': teams,
+        'selected_team': int(team_id) if team_id and team_id.isdigit() else None,
+        'selected_date': date,
+        'selected_status': status,
     }
     return render(request, 'matches/results.html', context)
 
@@ -83,6 +73,9 @@ def update_points_table(match):
     # Calculate NRR for both teams
     team1_entry.calculate_nrr()
     team2_entry.calculate_nrr()
+    # Save both entries to ensure all changes are persisted
+    team1_entry.save()
+    team2_entry.save()
 
 def player_statistics(request):
     """Display player statistics and rankings"""
@@ -224,38 +217,3 @@ def tournament_awards(request):
         'all_awards': all_awards,
     }
     return render(request, 'matches/tournament_awards.html', context)
-
-def update_points_table(match):
-    """Update points table after a match is completed"""
-    team1_entry, created = PointsTableEntry.objects.get_or_create(team=match.team1)
-    team2_entry, created = PointsTableEntry.objects.get_or_create(team=match.team2)
-    
-    # Use 5 overs for mini tournament
-    MATCH_OVERS = match.overs_per_innings or 5.0
-    
-    team1_entry.matches_played += 1
-    team2_entry.matches_played += 1
-    
-    # Update runs and overs
-    team1_entry.runs_for += match.team1_score
-    team1_entry.runs_against += match.team2_score
-    team1_entry.overs_for += MATCH_OVERS
-    team1_entry.overs_against += MATCH_OVERS
-    
-    team2_entry.runs_for += match.team2_score
-    team2_entry.runs_against += match.team1_score
-    team2_entry.overs_for += MATCH_OVERS
-    team2_entry.overs_against += MATCH_OVERS
-    
-    if match.team1_score > match.team2_score:
-        team1_entry.wins += 1
-        team1_entry.points += 2
-        team2_entry.losses += 1
-    else:
-        team2_entry.wins += 1
-        team2_entry.points += 2
-        team1_entry.losses += 1
-    
-    # Calculate NRR for both teams
-    team1_entry.calculate_nrr()
-    team2_entry.calculate_nrr()

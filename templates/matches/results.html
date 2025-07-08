@@ -8,128 +8,81 @@
     <p class="text-base sm:text-lg text-gray-600 px-2">Latest results and match outcomes from GPL Mini Tournament</p>
 </div>
 
+<!-- Filter Controls -->
+<form method="get" class="mb-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+    <select name="team" class="border rounded px-3 py-2 text-sm" style="min-width: 140px;">
+        <option value="">All Teams</option>
+        {% for team in teams %}
+            <option value="{{ team.id }}" {% if selected_team == team.id %}selected{% endif %}>{{ team.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="date" name="date" value="{{ selected_date }}" class="border rounded px-3 py-2 text-sm" style="min-width: 140px;">
+    <select name="status" class="border rounded px-3 py-2 text-sm" style="min-width: 140px;">
+        <option value="">All Statuses</option>
+        <option value="completed" {% if selected_status == 'completed' %}selected{% endif %}>Completed</option>
+        <option value="upcoming" {% if selected_status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+    </select>
+    <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded text-sm font-semibold">Filter</button>
+</form>
+
 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div class="p-4 sm:p-6">
         {% if matches %}
-            <div class="space-y-4 sm:space-y-6">
+            <div class="space-y-3 sm:space-y-4">
                 {% for match in matches %}
-                <div class="border border-gray-200 rounded-lg p-3 sm:p-4 lg:p-6 hover:shadow-md transition-shadow">
-                    <!-- Mobile Layout -->
-                    <div class="block lg:hidden">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center space-x-2">
-                                {% if match.team1.logo %}
-                                    <img src="{{ match.team1.logo.url }}" alt="{{ match.team1.name }}" class="w-10 h-10 rounded-full object-cover">
-                                {% else %}
-                                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm font-bold">
-                                        {{ match.team1.name|slice:":2"|upper }}
-                                    </div>
-                                {% endif %}
-                                <div class="text-center">
-                                    <h3 class="font-semibold text-gray-900 text-sm">{{ match.team1.name }}</h3>
-                                    {% if match.team1_score %}
-                                        <div class="text-lg font-bold text-blue-600">{{ match.team1_score }}/{{ match.team1_wickets|default:"0" }}</div>
+                <div class="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 sm:space-x-4 flex-1">
+                            <div class="text-center min-w-0 flex-1">
+                                <div class="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-1 flex items-center justify-center">
+                                    {% if match.team1.logo %}
+                                        <img src="{{ match.team1.logo.url }}" alt="{{ match.team1.name }}" class="w-full h-full object-cover rounded-full border-2 border-gray-200">
+                                    {% else %}
+                                        <div class="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold">
+                                            {{ match.team1.name|slice":2"|upper }}
+                                        </div>
                                     {% endif %}
                                 </div>
+                                <p class="text-xs sm:text-xs text-gray-600 truncate">{{ match.team1.name }}</p>
+                                <p class="text-sm sm:text-lg font-bold text-gray-900">
+                                    {{ match.team1_score|default:"-" }}
+                                    {% if match.team1_wickets is defined %}/{{ match.team1_wickets|default:"-" }}{% endif %}
+                                </p>
                             </div>
-                            
-                            <div class="text-center flex-shrink-0">
-                                <div class="text-lg font-bold text-gray-400 mb-1">VS</div>
-                                <div class="text-xs text-gray-500">{{ match.date }}</div>
+                            <div class="text-center min-w-0 flex-shrink-0">
+                                <span class="text-sm sm:text-lg font-bold text-gray-400">VS</span>
+                                <p class="text-xs text-gray-500">{{ match.date|date:"M d" }}</p>
                             </div>
-                            
-                            <div class="flex items-center space-x-2">
-                                <div class="text-center">
-                                    <h3 class="font-semibold text-gray-900 text-sm">{{ match.team2.name }}</h3>
-                                    {% if match.team2_score %}
-                                        <div class="text-lg font-bold text-blue-600">{{ match.team2_score }}/{{ match.team2_wickets|default:"0" }}</div>
+                            <div class="text-center min-w-0 flex-1">
+                                <div class="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-1 flex items-center justify-center">
+                                    {% if match.team2.logo %}
+                                        <img src="{{ match.team2.logo.url }}" alt="{{ match.team2.name }}" class="w-full h-full object-cover rounded-full border-2 border-gray-200">
+                                    {% else %}
+                                        <div class="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold">
+                                            {{ match.team2.name|slice":2"|upper }}
+                                        </div>
                                     {% endif %}
                                 </div>
-                                {% if match.team2.logo %}
-                                    <img src="{{ match.team2.logo.url }}" alt="{{ match.team2.name }}" class="w-10 h-10 rounded-full object-cover">
-                                {% else %}
-                                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm font-bold">
-                                        {{ match.team2.name|slice:":2"|upper }}
-                                    </div>
-                                {% endif %}
+                                <p class="text-xs sm:text-xs text-gray-600 truncate">{{ match.team2.name }}</p>
+                                <p class="text-sm sm:text-lg font-bold text-gray-900">
+                                    {{ match.team2_score|default:"-" }}
+                                    {% if match.team2_wickets is defined %}/{{ match.team2_wickets|default:"-" }}{% endif %}
+                                </p>
                             </div>
-                        </div>
-                        
-                        <!-- Result and Status -->
-                        <div class="flex justify-center items-center space-x-3">
-                            {% if match.winner %}
-                                <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    🏆 {{ match.winner.name }} Won
-                                </span>
-                            {% endif %}
-                            <span class="px-3 py-1 rounded-full text-xs font-medium
-                                {% if match.status == 'scheduled' %}bg-blue-100 text-blue-800
-                                {% elif match.status == 'live' %}bg-green-100 text-green-800
-                                {% elif match.status == 'completed' %}bg-gray-100 text-gray-800
-                                {% endif %}">
-                                {{ match.get_status_display }}
-                            </span>
                         </div>
                     </div>
-
-                    <!-- Desktop Layout -->
-                    <div class="hidden lg:flex items-center justify-between">
-                        <div class="flex items-center space-x-6">
-                            <!-- Team 1 -->
-                            <div class="text-center">
-                                {% if match.team1.logo %}
-                                    <img src="{{ match.team1.logo.url }}" alt="{{ match.team1.name }}" class="w-16 h-16 rounded-full object-cover mx-auto mb-2">
-                                {% else %}
-                                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-lg font-bold mx-auto mb-2">
-                                        {{ match.team1.name|slice:":2"|upper }}
-                                    </div>
-                                {% endif %}
-                                <h3 class="font-semibold text-gray-900 text-sm sm:text-base mb-1">{{ match.team1.name }}</h3>
-                                {% if match.team1_score %}
-                                    <div class="text-xl font-bold text-blue-600">{{ match.team1_score }}/{{ match.team1_wickets|default:"0" }}</div>
-                                {% endif %}
-                            </div>
-
-                            <!-- VS -->
-                            <div class="text-center">
-                                <div class="text-2xl font-bold text-gray-400 mb-2">VS</div>
-                                <div class="text-sm text-gray-500">{{ match.date }}</div>
-                                
-                            </div>
-
-                            <!-- Team 2 -->
-                            <div class="text-center">
-                                {% if match.team2.logo %}
-                                    <img src="{{ match.team2.logo.url }}" alt="{{ match.team2.name }}" class="w-16 h-16 rounded-full object-cover mx-auto mb-2">
-                                {% else %}
-                                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-lg font-bold mx-auto mb-2">
-                                        {{ match.team2.name|slice:":2"|upper }}
-                                    </div>
-                                {% endif %}
-                                <h3 class="font-semibold text-gray-900 text-sm sm:text-base mb-1">{{ match.team2.name }}</h3>
-                                {% if match.team2_score %}
-                                    <div class="text-xl font-bold text-blue-600">{{ match.team2_score }}/{{ match.team2_wickets|default:"0" }}</div>
-                                {% endif %}
-                            </div>
+                    <div class="mt-2 text-center">
+                        <span class="text-xs sm:text-sm font-semibold text-green-600">{{ match.result }}</span>
+                    </div>
+                    <div class="mt-2 flex flex-col sm:flex-row sm:justify-between sm:items-center text-xs sm:text-sm text-gray-600">
+                        <div>
+                            <span class="font-semibold">Overs/Side:</span> {{ match.overs_per_innings }}
                         </div>
-
-                        <!-- Result and Status -->
-                        <div class="text-right">
-                            {% if match.winner %}
-                                <div class="mb-2">
-                                    <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                        🏆 {{ match.winner.name }} Won
-                                    </span>
-                                </div>
-                            {% endif %}
-                            <span class="px-3 py-1 rounded-full text-sm font-medium
-                                {% if match.status == 'scheduled' %}bg-blue-100 text-blue-800
-                                {% elif match.status == 'live' %}bg-green-100 text-green-800
-                                {% elif match.status == 'completed' %}bg-gray-100 text-gray-800
-                                {% endif %}">
-                                {{ match.get_status_display }}
-                            </span>
+                        {% if match.player_of_match %}
+                        <div>
+                            <span class="font-semibold">Player of the Match:</span> {{ match.player_of_match.name }}
                         </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
