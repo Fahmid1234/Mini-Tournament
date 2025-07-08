@@ -37,6 +37,9 @@
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
         .mobile-menu.open {
             transform: translateX(0);
@@ -111,6 +114,13 @@
         .mobile-menu-overlay {
             z-index: 999;
         }
+        
+        /* Add scrolling to mobile menu content */
+        .mobile-menu-scroll {
+            overflow-y: auto;
+            flex: 1 1 auto;
+            max-height: calc(100vh - 64px); /* 64px is navbar height */
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -152,7 +162,7 @@
 
         <!-- Enhanced Mobile Navigation Menu -->
         <div id="mobile-menu" class="mobile-menu md:hidden absolute left-0 w-full h-screen shadow-2xl border-t border-gray-200">
-            <div class="p-4 pt-6 space-y-2">
+            <div class="mobile-menu-scroll p-4 pt-6 space-y-2">
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center mb-3">
                         <span class="text-2xl">🏏</span>
