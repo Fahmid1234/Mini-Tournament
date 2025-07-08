@@ -39,7 +39,7 @@
                                         <img src="{{ match.team1.logo.url }}" alt="{{ match.team1.name }}" class="w-full h-full object-cover rounded-full border-2 border-gray-200">
                                     {% else %}
                                         <div class="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold">
-                                            {{ match.team1.name|slice":2"|upper }}
+                                            {{ match.team1.name|slice:":2"|upper }}
                                         </div>
                                     {% endif %}
                                 </div>
@@ -59,7 +59,7 @@
                                         <img src="{{ match.team2.logo.url }}" alt="{{ match.team2.name }}" class="w-full h-full object-cover rounded-full border-2 border-gray-200">
                                     {% else %}
                                         <div class="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold">
-                                            {{ match.team2.name|slice":2"|upper }}
+                                            {{ match.team2.name|slice:":2"|upper }}
                                         </div>
                                     {% endif %}
                                 </div>

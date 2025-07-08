@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.urls import reverse
 from .models import Match, PointsTableEntry, PlayerMatchPerformance, TournamentAwards
 from teams.models import Team, Player
+from django.http import HttpResponseRedirect
 
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
@@ -151,6 +152,27 @@ class MatchAdmin(admin.ModelAdmin):
         self.message_user(request, f'{fixtures_created} fixtures generated successfully.')
     generate_fixtures.short_description = "Generate round-robin fixtures"
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        # Automatically update points table if match is completed and scores are present
+        if obj.status == 'completed' and obj.team1_score is not None and obj.team2_score is not None:
+            from matches.views import update_points_table
+            update_points_table(obj)
+
+    def response_post_save_change(self, request, obj):
+        # If match is completed and scores are present, redirect to points table
+        if obj.status == 'completed' and obj.team1_score is not None and obj.team2_score is not None:
+            url = reverse('admin:matches_pointstableentry_changelist')
+            return HttpResponseRedirect(url)
+        return super().response_post_save_change(request, obj)
+
+    def response_add(self, request, obj, post_url_continue=None):
+        # If match is completed and scores are present, redirect to points table
+        if obj.status == 'completed' and obj.team1_score is not None and obj.team2_score is not None:
+            url = reverse('admin:matches_pointstableentry_changelist')
+            return HttpResponseRedirect(url)
+        return super().response_add(request, obj, post_url_continue)
+
 @admin.register(PointsTableEntry)
 class PointsTableEntryAdmin(admin.ModelAdmin):
     list_display = ('position', 'team_display', 'matches_played', 'wins', 'losses', 'points', 'nrr_display', 'performance_indicator', 'table_actions')
@@ -203,22 +225,16 @@ class PointsTableEntryAdmin(admin.ModelAdmin):
     team_display.short_description = 'Team'
     
     def nrr_display(self, obj):
-        if obj.nrr > 0:
-            color = '#10b981'
-            prefix = '+'
-            bg_color = 'rgba(16, 185, 129, 0.1)'
-        elif obj.nrr < 0:
-            color = '#ef4444'
-            prefix = ''
-            bg_color = 'rgba(239, 68, 68, 0.1)'
-        else:
-            color = '#6b7280'
-            prefix = ''
-            bg_color = 'rgba(107, 114, 128, 0.1)'
-        
-        # Format NRR as string to avoid SafeString issues
+        # Get all entries ordered by points and NRR
+        all_entries = PointsTableEntry.objects.all().order_by('-points', '-nrr')
+        position = list(all_entries).index(obj) + 1
         nrr_formatted = f"{obj.nrr:.3f}"
-        
+        prefix = '+' if obj.nrr > 0 else ''
+        if position in [1, 2]:
+            color = '#10b981'  # green
+        else:
+            color = '#ef4444'  # red
+        bg_color = 'rgba(16, 185, 129, 0.1)' if position in [1, 2] else 'rgba(239, 68, 68, 0.1)'
         return format_html(
             '<span style="background: {}; color: {}; padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 12px; border: 1px solid {};">{}{}</span>',
             bg_color, color, color, prefix, nrr_formatted

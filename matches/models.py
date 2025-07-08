@@ -22,6 +22,13 @@ class Match(models.Model):
     def __str__(self):
         return f"{self.team1} vs {self.team2} on {self.date}"
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Automatically recalculate points table if match is completed and scores are present
+        if self.status == 'completed' and self.team1_score is not None and self.team2_score is not None:
+            from matches.views import recalculate_points_table
+            recalculate_points_table()
+
 class PlayerMatchPerformance(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='player_performances')
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='match_performances')

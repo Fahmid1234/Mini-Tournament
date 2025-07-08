@@ -39,43 +39,53 @@ def points_table(request):
     points_table = PointsTableEntry.objects.all().order_by('-points', '-nrr')
     return render(request, 'matches/points_table.html', {'points_table': points_table})
 
+def recalculate_points_table():
+    """Recalculate the points table for all teams from all completed matches."""
+    # Reset all points table entries
+    for entry in PointsTableEntry.objects.all():
+        entry.matches_played = 0
+        entry.wins = 0
+        entry.losses = 0
+        entry.points = 0
+        entry.runs_for = 0
+        entry.runs_against = 0
+        entry.overs_for = 0.0
+        entry.overs_against = 0.0
+        entry.nrr = 0.0
+        entry.save()
+
+    # Recalculate from all completed matches
+    completed_matches = Match.objects.filter(status='completed', team1_score__isnull=False, team2_score__isnull=False)
+    for match in completed_matches:
+        team1_entry, _ = PointsTableEntry.objects.get_or_create(team=match.team1)
+        team2_entry, _ = PointsTableEntry.objects.get_or_create(team=match.team2)
+        T20_OVERS = 20.0
+        team1_entry.matches_played += 1
+        team2_entry.matches_played += 1
+        team1_entry.runs_for += match.team1_score
+        team1_entry.runs_against += match.team2_score
+        team1_entry.overs_for += T20_OVERS
+        team1_entry.overs_against += T20_OVERS
+        team2_entry.runs_for += match.team2_score
+        team2_entry.runs_against += match.team1_score
+        team2_entry.overs_for += T20_OVERS
+        team2_entry.overs_against += T20_OVERS
+        if match.team1_score > match.team2_score:
+            team1_entry.wins += 1
+            team1_entry.points += 2
+            team2_entry.losses += 1
+        else:
+            team2_entry.wins += 1
+            team2_entry.points += 2
+            team1_entry.losses += 1
+        team1_entry.save()
+        team2_entry.save()
+    # Calculate NRR for all teams
+    for entry in PointsTableEntry.objects.all():
+        entry.calculate_nrr()
+
 def update_points_table(match):
-    """Update points table after a match is completed"""
-    team1_entry, created = PointsTableEntry.objects.get_or_create(team=match.team1)
-    team2_entry, created = PointsTableEntry.objects.get_or_create(team=match.team2)
-    
-    # Standard T20 overs
-    T20_OVERS = 20.0
-    
-    team1_entry.matches_played += 1
-    team2_entry.matches_played += 1
-    
-    # Update runs and overs
-    team1_entry.runs_for += match.team1_score
-    team1_entry.runs_against += match.team2_score
-    team1_entry.overs_for += T20_OVERS
-    team1_entry.overs_against += T20_OVERS
-    
-    team2_entry.runs_for += match.team2_score
-    team2_entry.runs_against += match.team1_score
-    team2_entry.overs_for += T20_OVERS
-    team2_entry.overs_against += T20_OVERS
-    
-    if match.team1_score > match.team2_score:
-        team1_entry.wins += 1
-        team1_entry.points += 2
-        team2_entry.losses += 1
-    else:
-        team2_entry.wins += 1
-        team2_entry.points += 2
-        team1_entry.losses += 1
-    
-    # Calculate NRR for both teams
-    team1_entry.calculate_nrr()
-    team2_entry.calculate_nrr()
-    # Save both entries to ensure all changes are persisted
-    team1_entry.save()
-    team2_entry.save()
+    recalculate_points_table()
 
 def player_statistics(request):
     """Display player statistics and rankings"""

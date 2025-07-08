@@ -69,7 +69,7 @@
                             <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{{ entry.losses }}</td>
                             <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-bold text-gray-900">{{ entry.points }}</td>
                             <td class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
-                                <span class="{% if entry.nrr > 0 %}text-green-600{% elif entry.nrr < 0 %}text-red-600{% endif %}">
+                                <span class="{% if forloop.counter <= 2 %}text-green-600{% else %}text-red-600{% endif %}">
                                     {% if entry.nrr > 0 %}+{% endif %}{{ entry.nrr|floatformat:3 }}
                                 </span>
                             </td>

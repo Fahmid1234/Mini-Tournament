@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-!=t34baal@fjyfqvr=w=l^d#2fo^c^xpe2_*&dkz&jzbk#)my1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['mini-tournament-3.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
