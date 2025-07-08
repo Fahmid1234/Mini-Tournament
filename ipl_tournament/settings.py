@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-!=t34baal@fjyfqvr=w=l^d#2fo^c^xpe2_*&dkz&jzbk#)my1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mini-tournament-3.onrender.com']
 
 
 # Application definition
@@ -103,7 +103,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://mini-tournament-3.onrender.com',
+]
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
