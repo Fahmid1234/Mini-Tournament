@@ -40,7 +40,7 @@ def results(request):
     upcoming_matches = Match.objects.filter(status='upcoming').order_by('date')
     
     context = {
-        'completed_matches': completed_matches,
+        'matches': completed_matches,
         'upcoming_matches': upcoming_matches,
     }
     return render(request, 'matches/results.html', context)
